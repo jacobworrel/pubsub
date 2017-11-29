@@ -1,7 +1,7 @@
 {
   "name": "pubsub",
   "version": "1.0.0",
-  "description": "A simple pub/sub interface written in Node.JS.",
+  "description": "A simple pub/sub interface implemented in Node.JS.",
   "main": "PubSub.js",
   "scripts": {
     "test": "mocha"

@@ -28,7 +28,7 @@ pubsub.publish('bar', 'world');
 */
 ```
 
-### Wilcard
+### Wildcard
 
 ```js
 const pubsub = new PubSub();

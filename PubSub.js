@@ -30,6 +30,7 @@ class PubSub {
 }
 
 module.exports = PubSub;
+
 const listener1 = msg => console.log('listener1: ' + msg);
 const listener2 = msg => console.log('listener2: ' + msg);
 

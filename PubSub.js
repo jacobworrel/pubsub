@@ -1,8 +1,19 @@
 class PubSub {
   constructor() {
+    // subscribers object have topics as keys
+    // the values are arrays of listeners to call back upon publication
     this.subscribers = {};
+    // history object will also have topics as keys
+    // the values will be an array of message to record history of published messages
     this.history = {};
   }
+
+  /**
+  * Subscribe a listener to a given topic.
+  * @param {string} topic - the topic to subscribe to
+  * @param {function} listener - the listener to call back when a message is published to a given topic
+  * @param {number} numMessages - the number of messages (starting from most recent) to be delivered
+  */
 
   subscribe(topic, listener, numMessages = 1) {
     if (!this.subscribers[topic]) {
@@ -11,6 +22,12 @@ class PubSub {
     }
     this.subscribers[topic].push({ numMessages, listener });
   }
+
+  /**
+  * Subscribe a listener to a given topic.
+  * @param {string} topic - the topic to publish a message to
+  * @param {string} message - the message to be published to a given topic
+  */
 
   publish(topic, message) {
     if (!this.subscribers[topic] || !this.history[topic]) {

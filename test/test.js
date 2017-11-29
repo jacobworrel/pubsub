@@ -62,12 +62,46 @@ describe('PubSub', () => {
   });
 
   describe('publish', () => {
+    const publishedMessages = [];
     const pubsub = new PubSub();
-    const { subscribers } = pubsub;
-    const listener1 = msg => console.log('listener1: ' + msg);
-    const listener2 = msg => console.log('listener2: ' + msg);
-    const topic = 'foo';
-    pubsub.subscribe(topic, listener1);
+    const { history } = pubsub;
+    const listener1 = msg => publishedMessages.push('listener1: ' + msg);
+    const listener2 = msg => publishedMessages.push('listener2: ' + msg);
+    const listener3 = msg => publishedMessages.push('listener3: ' + msg);
+    pubsub.subscribe('foo', listener1);
+    pubsub.subscribe('foo', listener2);
+    pubsub.subscribe('bar', listener2);
+    pubsub.publish('foo', 'hello');
+    pubsub.publish('bar', 'world');
 
+    it('should not publish a message if the topic does not exist', () => {
+      expect(() => pubsub.publish('baz', 'howdy ho!')).to.throw();
+    });
+
+    it('should call back each listener that is subscribed to a topic with the published message', () => {
+      expect(publishedMessages).to.deep.equal([
+        'listener1: hello',
+        'listener2: hello',
+        'listener2: world'
+      ]);
+    });
+
+    it('should record a history of messages delivered to a topic', () => {
+      expect(history['foo']).to.deep.equal(['hello']);
+      expect(history['bar']).to.deep.equal(['world']);
+    });
+
+    it('should publish a dynamic number of messages as specified by the subscriber', () => {
+      pubsub.subscribe('foo', listener3, 2);
+      pubsub.publish('foo', 'howdy ho!');
+      expect(publishedMessages).to.deep.equal([
+        'listener1: hello',
+        'listener2: hello',
+        'listener2: world',
+        'listener1: howdy ho!',
+        'listener2: howdy ho!',
+        'listener3: hello,howdy ho!'
+      ]);
+    });
   });
 });

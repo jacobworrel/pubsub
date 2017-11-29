@@ -28,7 +28,7 @@ describe('PubSub', () => {
     pubsub.subscribe(topic, listener1);
 
     it('should add a new topic to subscribe to', () => {
-      expect(subscribers).to.have.property(topic);
+      expect(subscribers).to.have.a.property(topic);
       expect(subscribers[topic]).to.be.an('array');
       expect(subscribers[topic]).to.have.lengthOf(1);
     });
@@ -102,6 +102,20 @@ describe('PubSub', () => {
         'listener2: howdy ho!',
         'listener3: hello,howdy ho!'
       ]);
+    });
+  });
+
+  describe('handleWildcard', () => {
+    const pubsub = new PubSub();
+    const { subscribers } = pubsub;
+    const listener1 = msg => console.log('listener1: ' + msg);
+    const listener2 = msg => console.log('listener2: ' + msg);
+    pubsub.subscribe('foo', listener1);
+    pubsub.subscribe('f*', listener2);
+    pubsub.subscribe('foobar*', listener1);
+    it('should add a listener that subscribes to topics matching wildcard pattern', () => {
+      expect(subscribers['foo']).to.have.lengthOf(2);
+      expect(subscribers['foobar']).to.be.an('undefined');
     });
   });
 });
